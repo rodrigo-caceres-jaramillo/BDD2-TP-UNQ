@@ -1,3 +1,3 @@
 #!/bin/bash
 
-Python main.py
+python main.py
