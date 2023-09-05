@@ -1,6 +1,7 @@
+from elementos import Tabla
+
 def main():
-    paginas= []
-    pagina_actual = None
+    tabla = Tabla()
     
     while True:
         comando = input("sql>").split()
@@ -9,23 +10,27 @@ def main():
         match operacion:
             case "insert": 
                 if len(argumentos) == 3:
-                    registro = Registro(argumentos[0], argumentos[1], argumentos[2])
-                    
-                    print("INSERT exitoso")
+                    tabla.agregar_registro(argumentos[0], argumentos[1], argumentos[2])
                 else:
                     print("Operación inválida")
             case "select":
                 if len(argumentos) == 0:
-                    print("SELECT exitoso")
+                    tabla.seleccionar_registros()
                 else:
                     print("Operación inválida")
             case ".table-metada":
-                print("Paginas:\nRegistros:")
+                if len(argumentos) == 0:
+                    tabla.metadata()
+                else:
+                    print("Operación inválida")
             case ".exit":
-                print("Terminado")
-                exit()
+                if len(argumentos) == 0:
+                    print("Terminado")
+                    exit()
+                else:
+                    print("Operación inválida")
+                
                    
 if __name__ == "__main__":
     main()
-    
-    
+ 
