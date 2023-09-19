@@ -1,16 +1,13 @@
 class Pagina:
-    def __init__(self):
-        self.capacidad = bytearray(4064)
-        self.espacio_disponible = 4064
-        self.registros = []
+    def __init__(self, datos):
+        self.datos = datos
+        self.capacidad = 4096
 
-    def agregar_registro(self, registro):
-        if len(registro) > self.espacio_disponible:
+    def insert(self, registro):
+        if (len(registro) + len(self.datos)) > self.capacidad: 
             return False
         else:
-            self.capacidad[4064 - self.espacio_disponible:] = registro
-            self.espacio_disponible -= len(registro)
-            self.registros.append(registro)
+            self.datos.append(bytes(registro))
             return True
         
     def contenido(self):
