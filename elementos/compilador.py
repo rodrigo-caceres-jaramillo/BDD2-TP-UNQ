@@ -16,7 +16,7 @@ class Compilador:
                     self.maquinaVirtual.select()
                 else:
                     print("Operación inválida")
-            case ".table-metada":
+            case ".table-metadata":
                 if len(argumentos) == 0:
                     self.maquinaVirtual.metadata()
                 else:

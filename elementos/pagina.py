@@ -1,15 +1,21 @@
-class Pagina:
-    def __init__(self, datos):
-        self.datos = datos
-        self.capacidad = 4096
+import struct
 
+
+class Pagina:
+    def __init__(self, bytes):
+        self.registros = []
+        self.cantidad_registros = len(bytes) // 291
+        for i in range(0, len(bytes), 291):
+            registro_bytes = bytes[i:i+291]
+            self.registros.append(registro_bytes)
+            
     def insert(self, registro):
-        if (len(registro) + len(self.datos)) > self.capacidad: 
-            return False
-        else:
-            self.datos.append(bytes(registro))
-            return True
+        self.registros.append(registro)
+        self.cantidad_registros =+ 1
         
     def contenido(self):
          for registro in self.registros:
-                print(f"{int.from_bytes(registro[:4], 'big')} {registro[4:36].decode('ascii').strip()} {registro[36:291].decode('ascii').strip()}")
+            id, nombre, email = struct.unpack('>I32s255s', registro)
+            nombre = nombre.decode('utf-8').rstrip('\x00')
+            email = email.decode('utf-8').rstrip('\x00')
+            print(f"{id}, {nombre}, {email}")

@@ -2,9 +2,9 @@ from .compilador import Compilador
 from .tabla import Tabla
 
 class MaquinaVirtual:
-    def __init__(self, archivo):
+    def __init__(self, nombre_archivo):
         self.compilador = Compilador(self)
-        self.tabla = Tabla(archivo)
+        self.tabla = Tabla(nombre_archivo)
         
     def iniciar(self):
         while True:
@@ -19,6 +19,7 @@ class MaquinaVirtual:
             
     def exit(self):
         self.tabla.commit()
+        print("Termindado")
         exit()
 
     def metadata(self):
