@@ -8,7 +8,10 @@ class Compilador:
         match comando:
             case "insert":
                 if len(argumentos) == 3:
-                    self.maquinaVirtual.insert(argumentos[0], argumentos[1], argumentos[2])
+                    if(argumentos[0].isdigit()):
+                        self.maquinaVirtual.insert(int(argumentos[0]), argumentos[1], argumentos[2])
+                    else:
+                        print("Operación inválida")
                 else:
                     print("Operación inválida")
             case "select":

@@ -12,9 +12,8 @@ class Paginador:
             self.crear_archivo()
         else:
             self.obtener_atributos()
-        print(self.tamaño)
-        print(self.paginas - 1)
         self.pagina_actual = self.get_pagina(self.paginas - 1)
+        print(self.pagina_actual)
     
     def obtener_atributos(self):
         self.tamaño = os.path.getsize(self.nombre_archivo)
@@ -24,15 +23,18 @@ class Paginador:
             self.paginas = self.tamaño // 4096
         self.registros = (self.tamaño % 4096) // 291
     
+    def sumar_registro(self):
+        self.registros = self.registros + 1
+    
     def crear_archivo(self):
         with open(self.nombre_archivo, "ab+") as file:
             print("Archivo creado")
         
     def get_pagina_actual(self):
         if self.pagina_actual.cantidad_registros >= 14:
-            nueva_pagina = Pagina(b'\x00' * 4096)
+            nueva_pagina = Pagina(bytearray())
             self.cache[self.paginas] = nueva_pagina
-            self.paginas += 1
+            self.paginas = self.paginas + 1
             self.pagina_actual = nueva_pagina
         return self.pagina_actual
     
@@ -49,10 +51,6 @@ class Paginador:
             archivo.seek(numero * 4096)
             bytes_pagina = archivo.read(4096)
             self.cache[numero] = Pagina(bytes_pagina)
-    
-    def getRegistros(self):
-        with open(self.nombre_archivo, "rb") as baseDeDatos:
-            return baseDeDatos.read()
      
     def commit(self):
         pass

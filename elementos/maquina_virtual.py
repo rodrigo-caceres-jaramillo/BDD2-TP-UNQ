@@ -11,8 +11,8 @@ class MaquinaVirtual:
             entrada = input("sql>").split()
             self.compilador.interpretar(entrada)
     
-    def insert(self, registro):
-        self.tabla.insert(registro)
+    def insert(self, id, nombre, mail):
+        self.tabla.insert(id, nombre, mail)
 
     def select(self):
         self.tabla.select()
