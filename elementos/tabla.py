@@ -6,7 +6,7 @@ class Tabla:
         self.paginador = Paginador(nombre_archivo)
     
     def insert(self, id, nombre, mail):
-        registro = struct.pack('>I32s255s', id, nombre.encode('utf-8'), mail.encode('utf-8'))
+        registro = self.codificar_registro(id, nombre, mail)
         pagina = self.paginador.get_pagina_actual()
         if (pagina.insert(bytes(registro))):
             self.paginador.sumar_registro()
@@ -18,6 +18,16 @@ class Tabla:
             
     def commit(self):
         self.paginador.commit()
+        self.paginador.cerrar_archivo()
             
     def metadata(self):
         return self.paginador.metadata()
+    
+    def codificar_registro(self, id, nombre, mail):
+        id_codificado = int(id).to_bytes(4, byteorder="big")
+        nombre_bytes = bytes(nombre, "ascii")
+        nombre_codificado = nombre_bytes + b"\00"* (32 - len(nombre_bytes))
+        mail_bytes = bytes(mail, "ascii")
+        mail_codificado = mail_bytes + b"\00"* (255 - len(mail_bytes))
+        
+        return id_codificado + nombre_codificado + mail_codificado

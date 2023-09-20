@@ -8,11 +8,12 @@ class Pagina:
         for i in range(0, len(bytes), 291):
             registro_bytes = bytes[i:i+291]
             self.registros.append(registro_bytes)
+        self.modificado = False
             
     def insert(self, registro):
         self.registros.append(registro)
         self.cantidad_registros= self.cantidad_registros + 1
-        print(self.cantidad_registros)
+        self.modificado = True
         return True
         
     def contenido(self):
