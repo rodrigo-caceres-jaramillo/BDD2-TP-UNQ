@@ -1,7 +1,7 @@
 import struct
 
 class Nodo:
-    def __init__(self, tipo=True, root=True, padre=0, cantidad_registros=0, registros={}):
+    def __init__(self, tipo=1, root=1, padre=0, cantidad_registros=0, registros={}):
         self.tipo = tipo
         self.root = root
         self.padre = padre
@@ -22,25 +22,25 @@ class Nodo:
         return cls(tipo, root, padre, cantidad_registros, registros)
     
     def to_bytes(self):
-        tipo_bytes = struct.pack('?', self.tipo)
-        root_bytes = struct.pack('?', self.root)
+        tipo_bytes = int(self.tipo).to_bytes(1)
+        root_bytes = int(self.root).to_bytes(1)
         padre_bytes = int(self.padre).to_bytes(4)
         cantidad_registros_bytes = int(self.cantidad_registros).to_bytes(4)
-        registros_bytes = bytearray
+        registros_bytes = b''
         for clave, valor in self.registros.items():
-            clave_bytes = int(clave).to_bytes(4)
-            valor_bytes = valor
-            registros_bytes += clave_bytes + valor_bytes
+            registro_bytes = int(clave).to_bytes(4) + valor
+            registros_bytes = registros_bytes + registro_bytes
 
-        # Concatenar todos los bytes
         bytes = tipo_bytes + root_bytes + padre_bytes + cantidad_registros_bytes + registros_bytes
-
         return bytes + b"\00"* (4096 - len(bytes))
             
     def insert(self, registro):
         if self.cantidad_registros == 13:
             return False
-        key = self.cantidad_registros + 1
+        if self.cantidad_registros == 0:
+            key = 0
+        else:
+            key = self.cantidad_registros
         self.registros[key] = registro
         self.cantidad_registros= self.cantidad_registros + 1
         return True
