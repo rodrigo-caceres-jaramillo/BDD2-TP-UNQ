@@ -16,6 +16,9 @@ class MaquinaVirtual:
 
     def select(self):
         self.tabla.select()
+        
+    def select_id(self, id):
+        self.tabla.select_id(id)
             
     def exit(self):
         self.tabla.commit()

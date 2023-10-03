@@ -17,7 +17,9 @@ class Compilador:
             case "select":
                 if len(argumentos) == 0:
                     self.maquinaVirtual.select()
-                else:
+                elif len(argumentos) == 1 and argumentos[0].isdigit():
+                    self.maquinaVirtual.select_id(argumentos[0])
+                else: 
                     print("Operación inválida")
             case ".table-metadata":
                 if len(argumentos) == 0:

@@ -55,4 +55,11 @@ class Nodo:
             nombre = nombre.decode('utf-8').rstrip('\x00')
             email = email.decode('utf-8').rstrip('\x00')
             print(f"{id} {nombre} {email}")
+            
+    def select_id(self, id):
+        registro = self.registros.get(int(id))
+        id, nombre, email = struct.unpack('>I32s255s', registro)
+        nombre = nombre.decode('utf-8').rstrip('\x00')
+        email = email.decode('utf-8').rstrip('\x00')
+        print(f"{id} {nombre} {email}")
         

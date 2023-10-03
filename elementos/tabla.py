@@ -13,6 +13,9 @@ class Tabla:
         
     def select(self):
         self.paginador.get_pagina_actual().select()
+        
+    def select_id(self, id):
+        self.paginador.get_pagina_actual().select_id(id)
             
     def commit(self):
         self.paginador.commit()
