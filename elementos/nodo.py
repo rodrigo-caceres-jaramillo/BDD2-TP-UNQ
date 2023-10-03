@@ -16,9 +16,12 @@ class Nodo:
         cantidad_registros = int.from_bytes(data[6:10])
         data_registros = data[10:]
         registros = {}
+        count = 0
         for i in range(cantidad_registros):
-            key, registro = struct.unpack('!I291s', data_registros[i:i+295])
+            key = int.from_bytes(data_registros[count:count+4])
+            registro = data_registros[count+4:count+295]
             registros[key] = registro
+            count= count + 295
         return cls(tipo, root, padre, cantidad_registros, registros)
     
     def to_bytes(self):
@@ -36,14 +39,15 @@ class Nodo:
             
     def insert(self, registro):
         if self.cantidad_registros == 13:
-            return False
-        if self.cantidad_registros == 0:
-            key = 0
+            print("Split no implementado")
         else:
-            key = self.cantidad_registros
-        self.registros[key] = registro
-        self.cantidad_registros= self.cantidad_registros + 1
-        return True
+            if self.cantidad_registros == 0:
+                key = 0
+            else:
+                key = self.cantidad_registros
+            self.registros[key] = registro
+            self.cantidad_registros= self.cantidad_registros + 1
+            return True
         
     def select(self):
          for registro in self.registros.values():
