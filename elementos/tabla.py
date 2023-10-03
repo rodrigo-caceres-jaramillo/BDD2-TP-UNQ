@@ -9,16 +9,13 @@ class Tabla:
         registro = self.codificar_registro(id, nombre, mail)
         pagina = self.paginador.get_pagina_actual()
         if (pagina.insert(bytes(registro))):
-            self.paginador.sumar_registro()
             print("INSERT exitoso")
         
     def select(self):
-        for pagina in self.paginador.todas():
-            pagina.contenido()
+        self.paginador.get_pagina_actual().select()
             
     def commit(self):
         self.paginador.commit()
-        self.paginador.cerrar_archivo()
             
     def metadata(self):
         return self.paginador.metadata()
