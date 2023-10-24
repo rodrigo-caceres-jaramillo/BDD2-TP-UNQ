@@ -12,13 +12,12 @@ class MaquinaVirtual:
             self.compilador.interpretar(entrada)
     
     def insert(self, id, nombre, mail):
-        self.tabla.insert(id, nombre, mail)
+        if self.tabla.insert(id, nombre, mail):
+            print("INSERT exitoso")
 
     def select(self):
         self.tabla.select()
-        
-    def select_id(self, id):
-        self.tabla.select_id(id)
+            
             
     def exit(self):
         self.tabla.commit()
