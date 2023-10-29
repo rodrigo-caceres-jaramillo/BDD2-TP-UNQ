@@ -3,7 +3,7 @@ from arbol.registro import Registro
 
 class Tabla:
     def __init__(self, nombre_archivo):
-        self.paginador = Paginador(nombre_archivo)
+        self.paginador = Paginador(nombre_archivo, 1000)
     
     def insert(self, id, nombre, mail):
         return self.paginador.insert(id, Registro(id, nombre, mail))

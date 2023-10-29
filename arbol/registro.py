@@ -21,4 +21,4 @@ class Registro:
         return id_codificado + nombre_bytes + email_bytes
     
     def contenido(self):
-        print(f"{self.id}, {self.nombre}, {self.email}")
+        print(f"{self.id} {self.nombre} {self.email}")
