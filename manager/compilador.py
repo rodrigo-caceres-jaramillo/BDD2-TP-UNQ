@@ -1,17 +1,31 @@
+import re
+
 class Compilador:
     def __init__(self, maquinaVirtual):
         self.maquinaVirtual = maquinaVirtual
         
     def interpretar(self, entrada):
-        comando = entrada[0]
-        argumentos = entrada[1:]
+        entrada_lista = entrada.split()
+        comando = entrada_lista[0]
+        argumentos = entrada_lista[1:]
         match comando:
+            case "create":
+                if len(argumentos) >= 1:
+                    pattern = r"(\w+)\s+(\w+)\((\w+)\)"
+                    matches = re.findall(pattern, entrada)
+                    result_dict = {}
+                    for match in matches:
+                        campo = match[0]
+                        tipo = match[1]
+                        tamaño = match[2]
+                        result_dict[campo] = {"type": tipo, "size": int(tamaño)}
+                    self.maquinaVirtual.create(int(argumentos[0].rstrip('(')), result_dict)
+                else:
+                    print("Operación inválida")
             case "insert":
-                if len(argumentos) == 3:
-                    if(argumentos[0].isdigit()):
-                        self.maquinaVirtual.insert(int(argumentos[0]), argumentos[1], argumentos[2])
-                    else:
-                        print("Operación inválida")
+                if len(argumentos) > 0:
+                    campos = argumentos[0:]
+                    self.maquinaVirtual.insert(campos)
                 else:
                     print("Operación inválida")
             case "select":

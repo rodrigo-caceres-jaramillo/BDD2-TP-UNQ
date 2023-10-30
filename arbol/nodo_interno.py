@@ -1,8 +1,9 @@
 class NodoInterno():
-    def __init__(self, numero, paginador, tamaño, root:bool, padre:int, cantidad_claves:int, hijo_derecho: int, punteros={}):
+    def __init__(self, numero, paginador, tamaño_pagina, tamaño_registro, root:bool, padre:int, cantidad_claves:int, hijo_derecho: int, punteros={}):
         self.numero = numero
         self.paginador = paginador
-        self.tamaño = tamaño
+        self.tamaño_pagina = tamaño_pagina
+        self.tamaño_registro= tamaño_registro
         self.root = root
         self.padre = padre
         self.cantidad_claves = cantidad_claves
@@ -10,7 +11,7 @@ class NodoInterno():
         self.punteros = punteros
         
     @classmethod  
-    def from_bytes(cls, data:bytearray, numero, paginador, tamaño):    
+    def from_bytes(cls, data:bytearray, numero, paginador, tamaño_pagina, tamaño_registro):    
         root = data[1]
         padre = int.from_bytes(data[2:6], byteorder='big')
         cantidad_claves = int.from_bytes(data[6:10], byteorder='big')
@@ -23,11 +24,18 @@ class NodoInterno():
             puntero = data_punteros[count+4:count+8]
             punteros[clave] = puntero
             count= count + 8
-        return cls(numero, paginador, tamaño, root, padre, cantidad_claves, hijo_derecho, punteros)   
+        return cls(numero, paginador, tamaño_pagina, tamaño_registro, root, padre, cantidad_claves, hijo_derecho, punteros)   
          
-    def insert(self, registro):
-        pass
-                 
+    def insert(self, key, registro):
+        if self.cantidad_claves == ((self.tamaño_pagina - 14) // 8):
+            print("nodo interno lleno")
+        else:
+            if(key > self.punteros[0]):
+                pagina=self.paginador.get_page(self.punteros[0])
+            
+            else:
+                pagina=self.paginador.get_page(self.hijo_derecho)
+            
     def select(self):
         hijos = list(self.punteros.values())
         for hijo in hijos.append(self.hijo_derecho):
