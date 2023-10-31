@@ -1,5 +1,5 @@
 class NodoInterno():
-    def __init__(self, numero, paginador, tamaño_pagina, tamaño_registro, root:bool, padre:int, cantidad_claves:int, hijo_derecho: int, punteros={}):
+    def __init__(self, numero, paginador, tamaño_pagina, tamaño_registro, root:bool, padre:int, cantidad_claves:int, hijo_derecho: int, punteros={}, modificado=False):
         self.numero = numero
         self.paginador = paginador
         self.tamaño_pagina = tamaño_pagina
@@ -9,6 +9,7 @@ class NodoInterno():
         self.cantidad_claves = cantidad_claves
         self.hijo_derecho = hijo_derecho
         self.punteros = punteros
+        self.modificado = modificado
         
     @classmethod  
     def from_bytes(cls, data:bytearray, numero, paginador, tamaño_pagina, tamaño_registro):    
