@@ -12,7 +12,7 @@ class Registro:
             valor_data = data[:tamaño]
             if tipo == 'int':
                 valor = int.from_bytes(valor_data, byteorder='big')
-            elif tipo == 'str':
+            elif tipo == 'string':
                 valor = valor_data.decode('utf-8').rstrip('\x00')
             else:
                 valor = None                
@@ -28,13 +28,11 @@ class Registro:
             tamaño = info['size']
             if tipo == 'int':
                 valor_codificado = int(valor).to_bytes(tamaño, byteorder='big')
-            elif tipo == 'str':
-                valor_codificado = valor.encode('utf-8') + b"\x00" * (tamaño - len(valor.encode('utf-8')))
-            else:
-                valor_codificado = b""
+            elif tipo == 'string':
+                valor_codificado = valor.encode('utf-8')[:tamaño] + b"\x00" * (tamaño - len(valor.encode('utf-8')))
             atributos_codificados += valor_codificado
         print(len(atributos_codificados))
         return atributos_codificados
     
     def contenido(self):
-        print(f"{self.id}{self.atributos}")
+        print(f"{self.id} {self.atributos}")

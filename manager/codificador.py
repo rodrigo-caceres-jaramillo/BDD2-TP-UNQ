@@ -13,17 +13,17 @@ class Codificador:
         tipo_bytes = int(1).to_bytes(1, byteorder='big')
         root_bytes = int(nodo.root).to_bytes(1, byteorder='big')
         padre_bytes = int(nodo.padre).to_bytes(4, byteorder='big')
-        cantidad_registros_bytes = int(nodo.cantidad_registros).to_bytes(4)
+        cantidad_registros_bytes = int(nodo.cantidad_registros).to_bytes(4, byteorder='big')
         registros_bytes = b''
         for clave, registro in nodo.registros.items():
-            registro_bytes = int(clave).to_bytes(4) + registro.to_bytes(self.formato)
-            registros_bytes = registros_bytes + registro_bytes
+            registro_bytes = int(clave).to_bytes(4, byteorder='big') + registro.to_bytes(self.formato)
+            registros_bytes += registro_bytes
 
         bytes = tipo_bytes + root_bytes + padre_bytes + cantidad_registros_bytes + registros_bytes
-        return bytes + b"\00"* (self.tamaño_pagina - len(bytes))
+        return bytes + b"\00" * (self.tamaño_pagina - len(bytes))
     
     def codificar_interno(self, nodo):
-        tipo_bytes = int(1).to_bytes(1, byteorder='big')
+        tipo_bytes = int(0).to_bytes(1, byteorder='big')
         root_bytes = int(nodo.root).to_bytes(1, byteorder='big')
         padre_bytes = int(nodo.padre).to_bytes(4, byteorder='big')
         cantidad_claves_bytes = int(nodo.cantidad_claves).to_bytes(4, byteorder='big')

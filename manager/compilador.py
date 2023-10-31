@@ -19,7 +19,8 @@ class Compilador:
                         tipo = match[1]
                         tamaño = match[2]
                         result_dict[campo] = {"type": tipo, "size": int(tamaño)}
-                    self.maquinaVirtual.create(int(argumentos[0].rstrip('(')), result_dict)
+                    formato = {"meta": {"page_size": int(argumentos[0].rstrip('('))}, "table": result_dict}
+                    self.maquinaVirtual.create(formato)
                 else:
                     print("Operación inválida")
             case "insert":

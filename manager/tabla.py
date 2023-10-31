@@ -4,8 +4,8 @@ class Tabla:
     def __init__(self, nombre_carpeta):    
         self.paginador = Paginador(nombre_carpeta)
         
-    def create(self, formato, tamaño):
-        self.paginador.create(formato, tamaño)
+    def create(self, formato):
+        self.paginador.create(formato)
 
     def insert(self, campos):
         self.paginador.insert(campos)

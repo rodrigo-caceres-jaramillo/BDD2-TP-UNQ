@@ -17,23 +17,22 @@ class Paginador:
         if not os.path.exists(ruta) or os.path.getsize(ruta) == 0:
             self.formato = None
         else:
-            with open(ruta, 'r') as archivo_formato:
-                contenido = json.loads(archivo_formato.read())
-                self.tamaño_pagina = contenido.pop("page_size", 0)
-                self.formato = contenido
-                self.tamaño_registro = sum(info['size'] for info in self.formato.values())
+            with open(ruta, 'r') as metadata:
+                contenido = json.loads(metadata.read())
+                self.formato = contenido["table"]
+                self.tamaño_pagina = contenido["meta"]["page_size"]
+                self.tamaño_registro = contenido["meta"]["register_size"]
                 self.codificador = Codificador(self.tamaño_pagina, self.formato)
                 self.paginas = {0: self.cargar_pagina(0)}
         
-    def create(self, meta, tamaño_pagina):
-        self.formato = meta
-        self.tamaño_pagina = tamaño_pagina
-        self.formato["page_size"] = tamaño_pagina
-        ruta = os.path.join(self.nombre_carpeta, "metadata.json")
+    def create(self, metadata):
+        self.formato = metadata["table"]
+        self.tamaño_pagina = metadata["meta"]["page_size"]
+        self.tamaño_registro = sum(info['size'] for info in metadata["table"].values())
+        metadata["meta"]["register_size"] = self.tamaño_registro
+        ruta = os.path.join(self.nombre_carpeta, "metadata.json") 
         with open(ruta, 'w') as archivo_formato:
-            archivo_formato.write(json.dumps(self.formato))
-        self.formato.pop("page_size", 0)
-        self.tamaño_registro = sum(info['size'] for info in self.formato.values())
+            archivo_formato.write(json.dumps(metadata))
         self.codificador = Codificador(self.tamaño_pagina, self.formato)
         self.paginas = {0: self.cargar_pagina(0)}
                    

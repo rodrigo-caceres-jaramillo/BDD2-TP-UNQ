@@ -11,8 +11,8 @@ class MaquinaVirtual:
             entrada = input("sql>")
             self.compilador.interpretar(entrada)
             
-    def create(self, tamaño_pag, formato):
-        self.tabla.create(formato, tamaño_pag)
+    def create(self, formato):
+        self.tabla.create(formato)
     
     def insert(self, campos):
         self.tabla.insert(campos)

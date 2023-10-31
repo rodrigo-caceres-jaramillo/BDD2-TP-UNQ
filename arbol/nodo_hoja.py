@@ -17,17 +17,18 @@ class NodoHoja():
     def from_bytes(cls, data:bytearray, numero, paginador, tamaño_pagina, tamaño_registro):
         root = data[1]
         padre = int.from_bytes(data[2:6], byteorder='big')
-        cantidad_registros = int.from_bytes(data[6:10])
+        cantidad_registros = int.from_bytes(data[6:10], byteorder='big')
         data_registros = data[10:]
         registros = {}
         count = 0
         for i in range(cantidad_registros):
-            registro = Registro.from_bytes(data_registros[count+4: (count + 4 + tamaño_registro)], paginador.formato)
-            key = int.from_bytes(data_registros[count:count+4])
-            print(key)
-            registros[key] = registro
-            count += tamaño_registro
             print(tamaño_registro)
+            key = int.from_bytes(data_registros[count:count+4], byteorder='big')
+            registro_data = data_registros[count+4: (count + 4 + tamaño_registro)]
+            registro = Registro.from_bytes(registro_data, paginador.formato)
+            registros[key] = registro
+            count += 4 + tamaño_registro
+            print(count)
         return cls(numero, paginador, tamaño_pagina, tamaño_registro, root, padre, cantidad_registros, registros)
              
     def insert(self, registro):

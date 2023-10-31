@@ -1,1 +1,4 @@
 *.pyc
+prueba.py
+*.db
+*.json
