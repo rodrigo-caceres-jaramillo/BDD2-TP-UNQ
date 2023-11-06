@@ -27,15 +27,18 @@ class NodoInterno():
             count= count + 8
         return cls(numero, paginador, tamaño_pagina, tamaño_registro, root, padre, cantidad_claves, hijo_derecho, punteros)   
          
-    def insert(self, key, registro):
-        if self.cantidad_claves == ((self.tamaño_pagina - 14) // 8):
-            print("nodo interno lleno")
-        else:
-            if(key > self.punteros[0]):
-                pagina=self.paginador.get_page(self.punteros[0])
+    def insert(self, registro):
+        nodo = self.buscarRamaPara(registro)
+        nodo.insert(registro)
             
-            else:
-                pagina=self.paginador.get_page(self.hijo_derecho)
+    def buscarRamaPara(self, registro):
+        keys = list(self.punteros.keys())
+        keys.sort()
+        for key in keys:
+            if int(registro.id) <= self.punteros[key]:
+                numero_pagina = key
+                return self.paginador.get_page(numero_pagina)
+        return self.paginador.get_page(self.hijo_derecho)
             
     def select(self):
         hijos = list(self.punteros.values())
