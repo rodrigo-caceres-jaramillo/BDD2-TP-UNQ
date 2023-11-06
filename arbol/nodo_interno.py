@@ -28,27 +28,38 @@ class NodoInterno():
         return cls(numero, paginador, tamaño_pagina, tamaño_registro, root, padre, cantidad_claves, hijo_derecho, punteros)   
          
     def insert(self, registro):
-        nodo = self.buscarRamaPara(registro)
-        nodo.insert(registro)
+        if(self.cantidad_claves < ((self.tamaño_pagina - 14) // 8)):
+            nodo = self.buscarRamaPara(registro)
+            nodo.insert(registro)
+        else:
+            print("split nodo interno")
+        
             
     def buscarRamaPara(self, registro):
         keys = list(self.punteros.keys())
         keys.sort()
+
         for key in keys:
-            if int(registro.id) <= self.punteros[key]:
-                numero_pagina = key
+            if int(registro.id) <= int(self.punteros[key]):
+                numero_pagina = self.punteros[key]
                 return self.paginador.get_page(numero_pagina)
         return self.paginador.get_page(self.hijo_derecho)
+    
+    def agregar_puntero(self, num_original, num_der, num_izq, ultima_clave):
+        self.punteros[num_izq] = ultima_clave
+        self.cantidad_claves += 1
+        if(self.hijo_derecho == num_original):
+            self.hijo_derecho = num_der
             
     def select(self):
-        hijos = list(self.punteros.values())
+        hijos = list(self.punteros.keys())
         hijos.append(self.hijo_derecho)
         for hijo in hijos:
             self.paginador.select(hijo)
             
     def metadata(self):
         paginas, registros= 1, 0
-        hijos = list(self.punteros.values())
+        hijos = list(self.punteros.keys())
         hijos.append(self.hijo_derecho)
         for hijo in hijos:
             h_pagina, h_registros= self.paginador.metadata(hijo)

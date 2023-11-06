@@ -11,18 +11,24 @@ class Paginador:
         self.cargar_formato()
         
     def cargar_formato(self):
-        ruta = os.path.join(self.nombre_carpeta, "metadata.json")
+        ruta_meta = os.path.join(self.nombre_carpeta, "metadata.json")
+        ruta_data = os.path.join(self.nombre_carpeta, "data.db")
         if not os.path.exists(self.nombre_carpeta):
             os.makedirs(self.nombre_carpeta)
-        if not os.path.exists(ruta) or os.path.getsize(ruta) == 0:
+        if not os.path.exists(ruta_meta) or os.path.getsize(ruta_meta) == 0:
             self.formato = None
         else:
-            with open(ruta, 'r') as metadata:
+            with open(ruta_meta, 'r') as metadata:
                 contenido = json.loads(metadata.read())
                 self.formato = contenido["table"]
                 self.tamaño_pagina = contenido["meta"]["page_size"]
                 self.tamaño_registro = contenido["meta"]["register_size"]
                 self.codificador = Codificador(self.tamaño_pagina, self.formato)
+                if(not os.path.exists(ruta_data) or os.path.getsize(ruta_data) == 0):
+                    self.cantidad_paginas = 1
+                else:  
+                    self.cantidad_paginas = os.path.getsize(ruta_data) // self.tamaño_pagina
+                print(self.cantidad_paginas)
                 self.paginas = {0: self.cargar_pagina(0)}
         
     def create(self, metadata):
@@ -34,6 +40,7 @@ class Paginador:
         with open(ruta, 'w') as archivo_formato:
             archivo_formato.write(json.dumps(metadata))
         self.codificador = Codificador(self.tamaño_pagina, self.formato)
+        self.cantidad_paginas = 1
         self.paginas = {0: self.cargar_pagina(0)}
                    
     def cargar_pagina(self, numPag):
@@ -42,15 +49,18 @@ class Paginador:
             return None
         else:
             if not os.path.exists(ruta) or os.path.getsize(ruta) == 0:
-                return NodoHoja(0, self, self.tamaño_pagina, self.tamaño_registro, True, 0, 0, {}, True)
+                nodo = NodoHoja(numPag, self, self.tamaño_pagina, self.tamaño_registro, True, 0, 0, {}, True)
+                return nodo
             else:
                 with open(ruta, 'rb') as archivo:
                     posicionInicial = self.tamaño_pagina * (numPag)
                     data = archivo.read()[posicionInicial: posicionInicial + self.tamaño_pagina]
                     if data[0] == 1:
-                        return NodoHoja.from_bytes(data, 0, self, self.tamaño_pagina, self.tamaño_registro)
+                        nodo_h = NodoHoja.from_bytes(data, numPag, self, self.tamaño_pagina, self.tamaño_registro)
+                        return nodo_h
                     else:
-                        return NodoInterno.from_bytes(data, 0, self, self.tamaño_pagina, self.tamaño_registro)
+                        nodo_i = NodoInterno.from_bytes(data, numPag, self, self.tamaño_pagina, self.tamaño_registro)
+                        return nodo_i
                 
     def get_page(self, numPag):
         if self.formato is None:
@@ -62,6 +72,11 @@ class Paginador:
                 return self.paginas.get(numPag)
             else:
                 return pagina
+            
+    def siguiente_numero(self):
+        numero = self.cantidad_paginas
+        self.cantidad_paginas += 1
+        return numero
                 
     def insert(self, campos, numPag=0):
         if self.formato is None:
