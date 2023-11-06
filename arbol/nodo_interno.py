@@ -39,13 +39,15 @@ class NodoInterno():
             
     def select(self):
         hijos = list(self.punteros.values())
-        for hijo in hijos.append(self.hijo_derecho):
+        hijos.append(self.hijo_derecho)
+        for hijo in hijos:
             self.paginador.select(hijo)
             
     def metadata(self):
         paginas, registros= 1, 0
         hijos = list(self.punteros.values())
-        for hijo in hijos.append(self.hijo_derecho):
+        hijos.append(self.hijo_derecho)
+        for hijo in hijos:
             h_pagina, h_registros= self.paginador.metadata(hijo)
             paginas += h_pagina
             registros += h_registros

@@ -35,7 +35,7 @@ class NodoHoja():
         if registro.id in self.registros:
             print("Clave repetida")
         else:
-            if self.cantidad_registros < ((self.tamaño_pagina - 10) // self.tamaño_registro):
+            if self.cantidad_registros < ((self.tamaño_pagina - 10) // (self.tamaño_registro + 4)):
                 self.registros[registro.id] = registro
                 self.cantidad_registros += 1
                 self.modificado = True
@@ -47,16 +47,27 @@ class NodoHoja():
                 
     def split(self):
         print("entra en split")
-        cant_registros = (self.cantidad_registros + 1) // 2
+        print("Mis registros:", self.cantidad_registros)
+        cant_registros_izq = self.cantidad_registros // 2
+        cant_registros_der = self.cantidad_registros - cant_registros_izq
+        print("registros para cada hoja:", cant_registros_izq, cant_registros_der)
+    
+        registros_izq = {k: self.registros[k] for k in list(self.registros)[:cant_registros_izq]}
+        registros_der = {k: self.registros[k] for k in list(self.registros)[cant_registros_izq:]}
+
         nodo_izq = NodoHoja(1, self.paginador, self.tamaño_pagina, self.tamaño_registro, 
-                            False, self.numero, cant_registros, 
-                            {k: self.registros[k] for k in list(self.registros)[:cant_registros]}, True)
+                    False, self.numero, cant_registros_izq, registros_izq, True)
+        print("cantidad de registros en nodo_izq:", len(nodo_izq.registros))
+        nodo_izq.select()
+
         nodo_der = NodoHoja(2, self.paginador, self.tamaño_pagina, self.tamaño_registro, 
-                            False, self.numero, cant_registros, 
-                            {k: self.registros[k] for k in list(self.registros)[cant_registros:]}, True)
+                    False, self.numero, cant_registros_der, registros_der, True)
+        print("cantidad de registros en nodo_der:", len(nodo_der.registros))
+        nodo_der.select()
+
         nodo_interno = NodoInterno(self.numero, self.paginador, self.tamaño_pagina, self.tamaño_registro, 
-                                   True, 0, 1, nodo_der.numero,
-                                   {nodo_izq.ultima_clave() : nodo_izq.numero}, True)
+                           True, 0, 1, nodo_der.numero,
+                           {nodo_izq.ultima_clave(): nodo_izq.numero}, True)
         self.paginador.paginas[0] = nodo_interno
         self.paginador.paginas[1] = nodo_izq
         self.paginador.paginas[2] = nodo_der
@@ -64,7 +75,11 @@ class NodoHoja():
         print("INSERT exitoso con split")
         
     def ultima_clave(self):
-        return self.registros[self.cantidad_registros - 1] 
+        if self.cantidad_registros > 0:
+            return max(self.registros.keys())
+        else:
+            print("No hay registros en el nodo.")
+            return None
                               
     def select(self):
         for registro in self.registros.values():
