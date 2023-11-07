@@ -64,8 +64,13 @@ class NodoInterno():
             nodo_der = self.crear_interno(numero_der, self.numero,cant_punteros_der, punteros_der, self.hijo_derecho)
             self.crear_root(nodo_izq, nodo_der)
         else:
-            print("caso 2 de split sin implementar")
-            pass
+            print("caso 2 de split")
+            numero_der = self.paginador.siguiente_numero() 
+            nodo_izq = self.crear_interno(self.numero, self.padre, cant_punteros_izq, punteros_izq, numero_der)
+            nodo_der = self.crear_interno(numero_der, self.padre, cant_punteros_der, punteros_der, self.hijo_derecho)
+            nodo_der.actualizar_hijos()
+            nodo_interno = self.paginador.get_page(self.padre)
+            nodo_interno.agregar_puntero(self.numero, nodo_der.numero, nodo_izq.numero, nodo_izq.ultima_clave())
             
     def crear_interno(self, numero, padre, cantidad_claves, punteros, hijo_derecho):
         nodo = NodoInterno(numero, self.paginador, self.tamaño_pagina, self.tamaño_registro, 
