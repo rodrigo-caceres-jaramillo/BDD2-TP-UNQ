@@ -28,13 +28,9 @@ class NodoInterno():
         return cls(numero, paginador, tamaño_pagina, tamaño_registro, root, padre, cantidad_claves, hijo_derecho, punteros)   
          
     def insert(self, registro):
-        if(self.cantidad_claves < ((self.tamaño_pagina - 14) // 8)):
-            nodo = self.buscarRamaPara(registro)
-            nodo.insert(registro)
-        else:
-            print("split nodo interno")
-        
-            
+        nodo = self.buscarRamaPara(registro)
+        nodo.insert(registro)
+
     def buscarRamaPara(self, registro):
         keys = list(self.punteros.keys())
         keys.sort()
@@ -50,7 +46,52 @@ class NodoInterno():
         self.cantidad_claves += 1
         if(self.hijo_derecho == num_original):
             self.hijo_derecho = num_der
+        if(self.cantidad_claves > ((self.tamaño_pagina - 14) // 8)):
+            self.split()
             
+    def split(self):
+        cant_punteros_izq = self.cantidad_claves // 2
+        cant_punteros_der = self.cantidad_claves - cant_punteros_izq
+        punteros_izq = {k: self.punteros[k] for k in list(self.punteros)[:cant_punteros_izq]}
+        print(punteros_izq)
+        punteros_der = {k: self.punteros[k] for k in list(self.punteros)[cant_punteros_der:]}
+        print(punteros_der)
+        
+        if(self.root):
+            numero_izq = self.paginador.siguiente_numero()
+            numero_der = self.paginador.siguiente_numero()  
+            nodo_izq = self.crear_interno(numero_izq, self.numero,cant_punteros_izq, punteros_izq, numero_der)
+            nodo_der = self.crear_interno(numero_der, self.numero,cant_punteros_der, punteros_der, self.hijo_derecho)
+            self.crear_root(nodo_izq, nodo_der)
+        else:
+            print("caso 2 de split sin implementar")
+            pass
+            
+    def crear_interno(self, numero, padre, cantidad_claves, punteros, hijo_derecho):
+        nodo = NodoInterno(numero, self.paginador, self.tamaño_pagina, self.tamaño_registro, 
+                           False, padre, cantidad_claves, hijo_derecho, punteros, True)
+        self.paginador.paginas[numero] = nodo
+        nodo.actualizar_hijos()
+        nodo.select()
+        return nodo 
+    
+    def actualizar_hijos(self):
+        hijos = list(self.punteros.keys())
+        hijos.append(self.hijo_derecho)
+        for key in hijos:
+            hijo = self.paginador.get_page(key)
+            hijo.padre = self.numero
+            hijo.modificado = True
+            
+    def ultima_clave(self):
+        nodo = self.paginador.get_page(self.hijo_derecho)
+        return nodo.ultima_clave()
+          
+    def crear_root(self, nodo_izq, nodo_der):
+        root = NodoInterno(self.numero, self.paginador, self.tamaño_pagina, self.tamaño_registro, 
+                           True, 0, 1, nodo_der.numero, {nodo_izq.numero : nodo_izq.ultima_clave()})
+        self.paginador.paginas[self.numero] = root
+          
     def select(self):
         hijos = list(self.punteros.keys())
         hijos.append(self.hijo_derecho)

@@ -31,7 +31,6 @@ class Registro:
             elif tipo == 'string':
                 valor_codificado = valor.encode('utf-8')[:tamaño] + b"\x00" * (tamaño - len(valor.encode('utf-8')))
             atributos_codificados += valor_codificado
-        print(len(atributos_codificados))
         return atributos_codificados
     
     def contenido(self):

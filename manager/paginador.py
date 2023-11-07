@@ -28,7 +28,6 @@ class Paginador:
                     self.cantidad_paginas = 1
                 else:  
                     self.cantidad_paginas = os.path.getsize(ruta_data) // self.tamaño_pagina
-                print(self.cantidad_paginas)
                 self.paginas = {0: self.cargar_pagina(0)}
         
     def create(self, metadata):
@@ -42,6 +41,7 @@ class Paginador:
         self.codificador = Codificador(self.tamaño_pagina, self.formato)
         self.cantidad_paginas = 1
         self.paginas = {0: self.cargar_pagina(0)}
+        print("CREATE exitoso")
                    
     def cargar_pagina(self, numPag):
         ruta = os.path.join(self.nombre_carpeta, "data.db")
