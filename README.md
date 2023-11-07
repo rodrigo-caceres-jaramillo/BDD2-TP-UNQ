@@ -17,8 +17,15 @@ Trabajo Practico de Base de Datos 2 UNQ
 
 4. Utilizar los comandos:
   
-  Para insertar nuevos registros:
-  `insert <id> <primer_campo>`
-  Para ver todos los registros:
-  `select`
+      Para insertar nuevos registros:
+      `insert <id> <primer_campo>`
+   
+      Para ver todos los registros:
+      `select`
+
+   Para ver la cantidad de registros y paginas:
+   `.table-metadata`
+
+   Para salir y guardar los cambios en un archivo:
+   `.exit`
 
