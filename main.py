@@ -1,5 +1,7 @@
 from manager.maquina_virtual import MaquinaVirtual
 import sys
 
-maquinaVirtual = MaquinaVirtual("ejemplo")
+carpeta = sys.argv[1]
+
+maquinaVirtual = MaquinaVirtual(carpeta)
 maquinaVirtual.iniciar()
